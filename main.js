@@ -9,12 +9,13 @@ const imgSalida = document.getElementById('img-salida');
 const txtSalida = document.getElementById('text-salida');
 
 const checkAluraValidations = (text) => {
-    const hasAccentOrSpecialChar = /[ÀÈÌÒÙàèìòùáéíóúüñÁÉÍÓÚÜÑ!@#$%^&*(),.?":{}|<>·]/.test(text);
+    //const hasAccentOrSpecialChar = /[ÀÈÌÒÙàèìòùáéíóúüñÁÉÍÓÚÜÑ!@#$%^&*(),.?":{}|<>·]/.test(text);
+    const hasInvalidChar = /[^a-zA-Z\s]/.test(text);
 
-    if (hasAccentOrSpecialChar) {
+    if (hasInvalidChar) {
         showError("* No se permiten acentos ni caracteres especiales.");
-        encryptBtn.disabled = !false;
-        unencryptBtn.disabled = !false;
+        encryptBtn.disabled = true;
+        unencryptBtn.disabled = true;
     } else {
         hideError();
         encryptBtn.disabled = false;
@@ -35,17 +36,17 @@ const hideError = () => {
 
 const updateButtonState = () => {
     const text = txtUncrypt.value.toLowerCase(); // Convertir a minúsculas para realizar comparaciones sin distinción de mayúsculas/minúsculas
-    const hasAccentOrSpecialChar = /[ÀÈÌÒÙàèìòùáéíóúüñÁÉÍÓÚÜÑ!@#$%^&*(),.?":{}|<>·]/.test(text);
-    const encryptButtonEnabled = !hasAccentOrSpecialChar && !text.includes('imes') && !text.includes('ai') && !text.includes('ober') && !text.includes('ufat');
-    const unencryptButtonEnabled = text.includes('imes') || text.includes('ai') || text.includes('ober') || text.includes('ufat');
+    const hasInvalidChar = /[^a-zA-Z\s]/.test(text);
+    const encryptButtonEnabled = !text.includes('imes') && !text.includes('ai') && !text.includes('ober') && !text.includes('ufat');
+    const unencryptButtonEnabled =  text.includes('imes') || text.includes('ai') || text.includes('ober') || text.includes('ufat');
     const anyTextEntered = text.length > 0;
     const anyTextOutput = txtEncrypt.value;
-    encryptBtn.disabled = !encryptButtonEnabled || !anyTextEntered;
-    unencryptBtn.disabled = !unencryptButtonEnabled || !anyTextEntered;
+    encryptBtn.disabled = !encryptButtonEnabled || !anyTextEntered || hasInvalidChar;
+    unencryptBtn.disabled = !unencryptButtonEnabled || !anyTextEntered || hasInvalidChar;
 
     
 
-    copiarAccion.disabled = !anyTextOutput.length > 0 || anyTextOutput.length  == 0;
+    copiarAccion.disabled = !anyTextOutput.length > 0;
     
     if(txtEncrypt.value.length >0){
         txtSalida.style.display = 'block';
